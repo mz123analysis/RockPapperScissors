@@ -8,32 +8,41 @@ function getComputerChoice() {
 }
 
 function getHumanChoice() {
-    let choice = prompt("What is your choice?");
-    let fixedChoice;
-    if (choice.toLowerCase() == "scissor"){
-        fixedChoice = "Scissor"
-    } else if (choice.toLowerCase() == "rock") {
-        fixedChoice = "Rock"
-    } else if (choice.toLowerCase() == "paper") {
-        fixedChoice = "Paper"
-    }
+
+    const buttons = document.querySelectorAll("button")
+
+    let fixedChoice = buttons.addEventListener('click', () => {
+        alert(buttons.id)
+    })
 
     return fixedChoice;
 }
 
-function playRound(humanChoice, compChoice) {
+function playRound(humanChoice, compChoice, humanScores, compScores) {
+    
     let winLose
     if (humanChoice == compChoice) {
         winLose = "Tied"
     } else if ((humanChoice == "Rock" && compChoice == "Paper") || (humanChoice == "Paper" && compChoice == "Scissor") || (humanChoice == "Scissor" && compChoice == "Rock")) {
         winLose = "Lose"
+        compScores.textContent = Number(compScores.textContent) + 1
     } else if ((compChoice == "Rock" && humanChoice == "Paper") || (compChoice == "Paper" && humanChoice == "Scissor") || (compChoice == "Scissor" && humanChoice == "Rock")) {
         winLose = "Win"
+        humanScores.textContent = Number(humanScores.textContent) + 1
     }
-    return winLose
+    
+    let winner1 = winner(humanScores, compScores)
+
+    if (winner1 == 1) {
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+        button.disabled = true;
+        })   ;
+    }
 }
 
-function playGame() {
+// This function is to play through Console. 
+function playGame() { 
     let humanScore = 0;
     let computerScore = 0;
 
@@ -59,4 +68,36 @@ function playGame() {
     }
 
     return gameResult
+}
+const buttons = document.querySelectorAll("button")
+
+buttons.forEach((button) => {
+button.addEventListener('click', () => {
+        playRound(button.id, getComputerChoice(), humanScores, compScores)
+        
+    })
+})
+
+const body = document.querySelector("body");
+const humanScores = document.createElement("div")
+humanScores.textContent = 0
+const compScores = document.createElement("div")
+compScores.textContent = 0
+
+body.appendChild(humanScores)
+body.appendChild(compScores)
+
+function winner(humanScores, compScores) {
+    const body = document.querySelector("body");
+    if (Number(humanScores.textContent) == 5) {
+        const winner = document.createElement('div')
+        winner.textContent = "You are the Winner!"
+        body.appendChild(winner)
+        return 1
+    } else if (Number(compScores.textContent) == 5) {
+        const winner = document.createElement('div')
+        winner.textContent = "The Computer has won!"
+        body.appendChild(winner)
+        return 1
+    }
 }
